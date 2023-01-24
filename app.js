@@ -1,7 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-const mongoose= require('mongoose');
+const mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
@@ -25,23 +25,23 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+    next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
-
+const MONGO_URL = process.env.MONGO_URL
 mongoose.connect(
-    "mongodb+srv://Mano9940:Dan09940@cluster0.eurlw.mongodb.net/test",
+    MONGO_URL,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -52,23 +52,23 @@ const userSchema = new mongoose.Schema({
     name: String,
     email: String,
     password: String,
-    confirmPassword:String
+    confirmPassword: String
 })
 
 const User = new mongoose.model("User", userSchema)
 
 app.post("/login", (req, res) => {
     const { email, password } = req.body
-    User.findOne({email: email}, (err, user) => {
-       if(user) {
-          if(password === user.password){
-              res.send({message: "Logged in successfully", user: user})
-          }else{
-              res.send({message: "Password did not match"})
-          }
-       }else{
-           res.send({message:"User not registered"})
-       }
+    User.findOne({ email: email }, (err, user) => {
+        if (user) {
+            if (password === user.password) {
+                res.send({ message: "Logged in successfully", user: user })
+            } else {
+                res.send({ message: "Password did not match" })
+            }
+        } else {
+            res.send({ message: "User not registered" })
+        }
     })
 })
 
@@ -85,7 +85,7 @@ app.post("/register", (req, res) => {
                 password,
                 confirmPassword
             })
-            
+
             user.save(err => {
                 if (err) {
                     res.send(err)
